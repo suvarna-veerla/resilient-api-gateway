@@ -18,15 +18,15 @@ export default function Dashboard() {
       tension: 0.3
     }]
   });
-
-  const sendTraffic = async (isCrash) => {
+const sendTraffic = async (isCrash) => {
     try {
-      // Connecting perfectly to upgraded backend port 8082
-      const response = await fetch(`http://localhost:8082/sap/opu/odata/sap/API_SALES_ORDER_SRV/A_SalesOrder?ip=192.168.1.100&crash=${isCrash}`);
+      // Connecting perfectly to global live cloud railway backend
+      const response = await fetch(`https://railway.app{isCrash}`);
       const data = await response.json();
 
       setTotalRequests(prev => prev + 1);
       setCircuitState(data.circuitState);
+
 
       // 1. స్ప్రింగ్ బూట్ నుండి వచ్చే SAP డేటాను సురక్షితంగా రీడ్ చేయడం (డూప్లికేషన్ లేకుండా క్లీన్ చేసాం)
       const sapPayload = data.sapPayload || { vbeln: "SO-Pending", kunnr: "N/A", matnr: "MAT-Pending", netwr: 0, waerk: "INR" };
