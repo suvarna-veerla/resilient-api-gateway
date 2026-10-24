@@ -1,16 +1,75 @@
-# React + Vite
+# Resilient API Gateway for SAP OData Services
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A web-based API Gateway prototype designed to demonstrate resilient request handling for SAP S/4HANA OData services. The project includes a React dashboard and a Spring Boot backend with rate limiting and circuit breaker mechanisms.
 
-Currently, two official plugins are available:
+## Live Demo
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+**Application:** https://resilient-api-gateway-ps3s.onrender.com/
 
-## React Compiler
+> Note: The live service may take a little time to start if it has been idle.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Project Overview
 
-## Expanding the Oxlint configuration
+This project demonstrates how an API gateway can manage incoming requests, simulate SAP OData responses, and handle failures to improve service reliability.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+The dashboard allows users to send requests and simulate failures to observe the gateway's behavior.
+
+## Key Features
+
+- **Rate Limiting:** Limits repeated requests to help control incoming traffic.
+- **Circuit Breaker:** Demonstrates CLOSED, OPEN, and HALF_OPEN states to manage simulated service failures.
+- **Request Monitoring:** Displays gateway responses and request activity through a dashboard.
+- **SAP OData Simulation:** Returns sample sales order payloads inspired by SAP OData service responses.
+- **REST API Integration:** Connects a React frontend to a Spring Boot backend.
+- **Docker Support:** Includes containerization support for deployment.
+
+## Technology Stack
+
+- **Frontend:** React, Vite, JavaScript
+- **Backend:** Java, Spring Boot
+- **API:** REST, SAP OData service simulation
+- **Resilience:** Rate limiting, circuit breaker
+- **Deployment:** Docker, Render
+- **Version Control:** Git, GitHub
+
+## Architecture
+
+1. The user sends a request through the React dashboard.
+2. The Spring Boot backend receives and processes the request.
+3. The rate limiter checks whether the request can proceed.
+4. The circuit breaker manages simulated service failures.
+5. The backend returns a response that the dashboard can display.
+
+## Run Locally
+
+### Prerequisites
+
+- Node.js and npm
+- Java 17 or a compatible JDK
+- Maven
+
+### Frontend
+
+```bash
+npm install
+npm run dev
+```
+
+### Backend
+
+Run the Spring Boot application from the backend project directory using Maven:
+
+```bash
+mvn spring-boot:run
+```
+
+The backend is configured to use port `8082` by default.
+
+## Project Repositories
+
+- **Frontend:** https://github.com/suvarna-veerla/resilient-api-gateway
+- **Backend:** https://github.com/suvarna-veerla/sap-api-gateway-backend
+
+## Disclaimer
+
+This is a demonstration project. The SAP OData responses are simulated; a live SAP S/4HANA system is not connected unless separately configured.
