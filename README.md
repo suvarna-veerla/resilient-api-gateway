@@ -1,75 +1,148 @@
-# Resilient API Gateway for SAP OData Services
+# Resilient OData Proxy Gateway Engine for SAP S/4HANA Cloud ERP
 
-A web-based API Gateway prototype designed to demonstrate resilient request handling for SAP S/4HANA OData services. The project includes a React dashboard and a Spring Boot backend with rate limiting and circuit breaker mechanisms.
+A Java Spring Boot project that demonstrates resilient API request handling for SAP-style OData services using rate limiting and circuit-breaker patterns.
 
-## Live Demo
-
-**Application:** https://resilient-api-gateway-ps3s.onrender.com/
-
-> Note: The live service may take a little time to start if it has been idle.
+The project includes a backend gateway and a monitoring dashboard designed to demonstrate request handling, simulated service failures, and gateway behavior.
 
 ## Project Overview
 
-This project demonstrates how an API gateway can manage incoming requests, simulate SAP OData responses, and handle failures to improve service reliability.
+Enterprise applications depend on APIs to exchange business data. Excessive requests or service failures can affect reliability and availability.
 
-The dashboard allows users to send requests and simulate failures to observe the gateway's behavior.
+This project demonstrates how an API gateway can control incoming traffic and handle simulated service failures using common resilience patterns.
+
+**Project status:** Academic/personal project with simulated SAP OData responses. A live SAP S/4HANA connection is not claimed.
 
 ## Key Features
 
-- **Rate Limiting:** Limits repeated requests to help control incoming traffic.
-- **Circuit Breaker:** Demonstrates CLOSED, OPEN, and HALF_OPEN states to manage simulated service failures.
-- **Request Monitoring:** Displays gateway responses and request activity through a dashboard.
-- **SAP OData Simulation:** Returns sample sales order payloads inspired by SAP OData service responses.
-- **REST API Integration:** Connects a React frontend to a Spring Boot backend.
-- **Docker Support:** Includes containerization support for deployment.
+- **Rate Limiting:** Token-bucket-based request control using client IP addresses.
+- **Circuit Breaker:** Demonstrates CLOSED, OPEN, and HALF_OPEN states.
+- **Failure Simulation:** Simulates service failures to observe circuit-breaker behavior.
+- **OData-Style Endpoint:** Exposes a SAP-style sales-order endpoint with sample business data.
+- **Monitoring Dashboard:** A React interface for sending requests and observing traffic metrics.
+- **Containerization:** Docker-based backend packaging.
+- **Cloud Deployment:** Backend deployed on Render.
 
 ## Technology Stack
 
-- **Frontend:** React, Vite, JavaScript
-- **Backend:** Java, Spring Boot
-- **API:** REST, SAP OData service simulation
-- **Resilience:** Rate limiting, circuit breaker
-- **Deployment:** Docker, Render
-- **Version Control:** Git, GitHub
+| Component | Technologies |
+|---|---|
+| Backend | Java, Spring Boot |
+| API | REST, OData-style endpoint |
+| Resilience | Token Bucket, Circuit Breaker |
+| Frontend | React, JavaScript |
+| Deployment | Docker, Render |
+| Build Tool | Maven |
 
 ## Architecture
 
-1. The user sends a request through the React dashboard.
-2. The Spring Boot backend receives and processes the request.
-3. The rate limiter checks whether the request can proceed.
-4. The circuit breaker manages simulated service failures.
-5. The backend returns a response that the dashboard can display.
+```text
+User
+  |
+  v
+React Monitoring Dashboard
+  |
+  v
+Spring Boot API Gateway
+  |
+  +--> Rate Limiter
+  |
+  +--> Circuit Breaker
+  |
+  v
+Simulated SAP OData Response
+```
 
-## Run Locally
+## API Endpoint
+
+**Base endpoint:**
+
+`/sap/opu/odata/sap/API_SALES_ORDER_SRV`
+
+**Deployed backend:**
+
+https://resilient-api-gateway-ps3s.onrender.com/
+
+The endpoint returns simulated sales-order data, including fields such as sales order number, customer number, material number, net amount, and currency.
+
+Note: The deployed root URL may not display the API response. Use the documented endpoint and its supported HTTP method when testing.
+
+## Resilience Behavior
+
+### Rate Limiting
+
+The token-bucket implementation uses a maximum capacity of five tokens and a refill rate of one token every ten seconds. Requests may be limited when tokens are exhausted.
+
+### Circuit Breaker
+
+The gateway demonstrates three circuit states:
+
+- **CLOSED:** Requests are allowed through the normal processing path.
+- **OPEN:** Requests are rejected while the circuit is open.
+- **HALF_OPEN:** After the cooldown period, the implementation allows recovery behavior to be evaluated.
+
+The current implementation uses a five-second cooldown.
+
+## Running Locally
 
 ### Prerequisites
 
-- Node.js and npm
-- Java 17 or a compatible JDK
+- Java Development Kit (JDK)
 - Maven
+- Git
 
-### Frontend
+### Steps
 
-```bash
-npm install
-npm run dev
-```
+1. Clone the repository:
 
-### Backend
+   ```bash
+   git clone https://github.com/suvarna-veerla/sap-api-gateway-backend.git
+   ```
 
-Run the Spring Boot application from the backend project directory using Maven:
+2. Open the cloned project directory:
 
-```bash
-mvn spring-boot:run
-```
+   ```bash
+   cd sap-api-gateway-backend
+   ```
 
-The backend is configured to use port `8082` by default.
+3. Build the project:
 
-## Project Repositories
+   ```bash
+   mvn clean package
+   ```
 
-- **Frontend:** https://github.com/suvarna-veerla/resilient-api-gateway
-- **Backend:** https://github.com/suvarna-veerla/sap-api-gateway-backend
+4. Run the Spring Boot application:
 
-## Disclaimer
+   ```bash
+   mvn spring-boot:run
+   ```
 
-This is a demonstration project. The SAP OData responses are simulated; a live SAP S/4HANA system is not connected unless separately configured.
+5. Test the gateway using its configured endpoint:
+
+   ```text
+   http://localhost:8082/sap/opu/odata/sap/API_SALES_ORDER_SRV
+   ```
+
+Use the HTTP method and request format supported by the controller.
+
+## Learning Outcomes
+
+- Implementing REST APIs using Spring Boot.
+- Understanding token-bucket rate limiting.
+- Learning circuit-breaker state transitions.
+- Simulating API failures and examining gateway behavior.
+- Packaging a backend application with Docker.
+- Deploying a Java backend to a cloud platform.
+
+## Future Enhancements
+
+- Add automated unit and integration tests.
+- Improve structured logging and monitoring.
+- Add configurable rate limits and circuit-breaker settings.
+- Integrate with a real SAP S/4HANA environment using appropriate credentials and connectivity.
+- Add API documentation and request-validation tests.
+
+## Author
+
+**Suvarna Veerla**
+
+GitHub: https://github.com/suvarna-veerla
